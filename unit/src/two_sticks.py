@@ -45,14 +45,3 @@ def solution(long, short):
     for num in range(max_length, 0, -1):
         if long // num + short // num == 4:
             return num
-
-
-assert solution(10, 21) == 7
-assert solution(13, 11) == 5
-assert solution(2, 1) == 0
-assert solution(1, 8) == 2
-assert solution(1, 3) == 1
-assert solution(1, 1) == 0
-assert solution(5, 5) == 2
-assert solution(5, 1) == 1
-assert solution(2, 2) == 1
