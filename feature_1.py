@@ -1,1 +1,0 @@
-print('Hello Group West Side!')
