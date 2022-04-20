@@ -31,14 +31,3 @@ def is_balanced(expression: str) -> bool:
         elif not (my_queue and symbol == my_queue.pop()):
             return False
     return not my_queue
-
-
-assert is_balanced('[]{}()')
-assert is_balanced('[({})]{}()')
-assert is_balanced('({(){}[]})[]')
-
-assert not is_balanced('[]{}())')
-assert not is_balanced('[]{(}())')
-assert not is_balanced('[{(})]{}()')
-assert not is_balanced('[({}][))(]{}()')
-assert not is_balanced('[({}][)]{}()')
