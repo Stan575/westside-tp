@@ -1,4 +1,5 @@
 import unittest
+
 from unit.src.medain import median
 
 
@@ -52,8 +53,6 @@ class TestMedian(unittest.TestCase):
 
     def test_median_list_bool_true_true_true(self):
         self.assertEqual(median([True, True, True]), 1)
-
-
 
 
 
