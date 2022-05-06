@@ -15,8 +15,9 @@ class TestLogo(unittest.TestCase):
     LOGO_X = 32
     LOGO_Y = 8
     DELTA = 3
-    LOGO_DESKTOP_SVG = f'{URL}static/media/genadrop-logo.e0e23971.svg'
-    LOGO_DROP_SVG = f'{URL}static/media/drop.495aca87.svg'
+    LOGO_DESKTOP_SVG_URL = f'{URL}static/media/genadrop-logo.e0e23971.svg'
+    LOGO_DROP_SVG_URL = f'{URL}static/media/drop.495aca87.svg'
+    HTTP_OK = 200
 
     def setUp(self):
         service = Service(ChromeDriverManager().install())
@@ -38,15 +39,15 @@ class TestLogo(unittest.TestCase):
 
         # Verify urls for logo images
         logo_desktop = self.driver.find_element(By.CSS_SELECTOR, "img[class^='Navbar_logoDesktop']")
-        self.assertEqual(logo_desktop.get_attribute('src'), self.LOGO_DESKTOP_SVG, 'Incorrect desktop logo svg url.')
+        self.assertEqual(logo_desktop.get_attribute('src'), self.LOGO_DESKTOP_SVG_URL, 'Incorrect desktop logo svg url.')
         logo_drop = self.driver.find_element(By.CSS_SELECTOR, "img[class^='Navbar_drop']")
-        self.assertEqual(logo_drop.get_attribute('src'), self.LOGO_DROP_SVG, 'Incorrect drop logo svg url.')
+        self.assertEqual(logo_drop.get_attribute('src'), self.LOGO_DROP_SVG_URL, 'Incorrect drop logo svg url.')
 
         # Verify image resources exist
-        self.assertEqual(requests.head(self.LOGO_DESKTOP_SVG).status_code, 200,
-                         f'Desktop logo svg file is not available, url: {self.LOGO_DESKTOP_SVG}')
-        self.assertEqual(requests.head(self.LOGO_DROP_SVG).status_code, 200,
-                         f'Drop logo svg file is not available, url: {self.LOGO_DROP_SVG}')
+        self.assertEqual(requests.head(self.LOGO_DESKTOP_SVG_URL).status_code, self.HTTP_OK,
+                         f'Desktop logo svg file is not available, url: {self.LOGO_DESKTOP_SVG_URL}')
+        self.assertEqual(requests.head(self.LOGO_DROP_SVG_URL).status_code, self.HTTP_OK,
+                         f'Drop logo svg file is not available, url: {self.LOGO_DROP_SVG_URL}')
 
         # Get header logo size and location data
         logo_rectangle = logo_div_element.rect
