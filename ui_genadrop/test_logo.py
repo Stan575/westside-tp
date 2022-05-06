@@ -33,7 +33,7 @@ class TestLogo(unittest.TestCase):
         self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class^='Navbar_container']")))
 
         # Verify header logo div is displayed
-        logo_div_element = self.driver.find_element(By.CLASS_NAME, "Navbar_logoContainer__1NhKc")
+        logo_div_element = self.driver.find_element(By.CSS_SELECTOR, "div[class^='Navbar_logoContainer']")
         self.assertTrue(logo_div_element.is_displayed(), 'Header logo div is not displayed.')
 
         # Verify urls for logo images
