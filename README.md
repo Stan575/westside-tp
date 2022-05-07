@@ -16,11 +16,10 @@ WebDriverManager 3.5.4 <br>
    |-- LICENSE
    |-- README.md
    |-- requirements.txt
-   |-- unit
-   |   |-- src
-   |   |-- test
-   |
-   `-- selen
+   |-- genadrop
+   `-- unit
+       |-- src
+       `-- test
 ```
 
 ## How to prepare environment
