@@ -8,16 +8,16 @@ from selenium.webdriver.support import expected_conditions as EC
 import requests
 
 
-class TestHomePageHeader(unittest.TestCase):
+class TestHomePage(unittest.TestCase):
     URL = 'https://www.genadrop.com/'
     MINT_URL = f'{URL}mint'
+    LOGO_DESKTOP_SVG_URL = f'{URL}static/media/genadrop-logo.e0e23971.svg'
+    LOGO_DROP_SVG_URL = f'{URL}static/media/drop.495aca87.svg'
     LOGO_HEIGHT = 47
     LOGO_WIDTH = 64
     LOGO_X = 32
     LOGO_Y = 8
     DELTA = 3
-    LOGO_DESKTOP_SVG_URL = f'{URL}static/media/genadrop-logo.e0e23971.svg'
-    LOGO_DROP_SVG_URL = f'{URL}static/media/drop.495aca87.svg'
     MINT_TAB_TITLE = 'GenaDrop: No-Code Generative NFT creator, minter, & marketplace'
     MINT_PAGE_TITLE = 'Mint Your NFTs'
     HTTP_OK = 200
