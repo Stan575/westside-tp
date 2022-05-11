@@ -1,14 +1,18 @@
 import unittest
+
+import requests
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import requests
+from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class TestLogo(unittest.TestCase):
+    NEAR_FOUNDATION_URL = "https://near.foundation/"
+    NEAR_FOUNDATION_TAB_TITLE = "NEAR Foundation"
+    NEAR_FOUNDATION_PAGE_TITLE = "NEAR Foundation"
     URL = 'https://www.genadrop.com/'
     LOGO_HEIGHT = 47
     LOGO_WIDTH = 64
@@ -39,7 +43,8 @@ class TestLogo(unittest.TestCase):
 
         # Verify urls for logo images
         logo_desktop = self.driver.find_element(By.CSS_SELECTOR, "img[class^='Navbar_logoDesktop']")
-        self.assertEqual(logo_desktop.get_attribute('src'), self.LOGO_DESKTOP_SVG_URL, 'Incorrect desktop logo svg url.')
+        self.assertEqual(logo_desktop.get_attribute('src'), self.LOGO_DESKTOP_SVG_URL,
+                         'Incorrect desktop logo svg url.')
         logo_drop = self.driver.find_element(By.CSS_SELECTOR, "img[class^='Navbar_drop']")
         self.assertEqual(logo_drop.get_attribute('src'), self.LOGO_DROP_SVG_URL, 'Incorrect drop logo svg url.')
 
@@ -67,6 +72,31 @@ class TestLogo(unittest.TestCase):
                                msg=f'Header logo actual location x: {actual_logo_location_x}, expected: {self.LOGO_X}')
         self.assertAlmostEqual(actual_logo_location_y, self.LOGO_Y, delta=self.DELTA,
                                msg=f'Header logo actual location y: {actual_logo_location_y}, expected: {self.LOGO_Y}')
+
+    def test_near_foundation_link(self):
+        """ TC id: GD_HP008 """
+        near_foundation_link = self.wait.until(
+            EC.visibility_of_element_located((By.XPATH, "//img[@class='Orgs_org__2zmxJ'][2]")))
+        near_foundation_link.click()
+        window_name = self.driver.window_handles[-1]
+        self.driver.switch_to.window(window_name=window_name)
+        actual_near_foundation_url = self.driver.current_url
+        assert actual_near_foundation_url == self.NEAR_FOUNDATION_URL, \
+            f"Wrong redirection upon clicking 'Near Foundation Link' button, actual url: '{actual_near_foundation_url}'" \
+            f", expected url: '{self.NEAR_FOUNDATION_URL}' "
+
+        # Verify tab title
+        actual_near_foundation_title = self.driver.title
+        assert actual_near_foundation_title == self.NEAR_FOUNDATION_TAB_TITLE, \
+            f"Unexpected tab title for Mint page, actual: '{actual_near_foundation_title}'," \
+            f"expected: '{self.NEAR_FOUNDATION_TAB_TITLE}'"
+
+        # Verify page main area title
+        actual_page_title = self.wait.until(
+            EC.visibility_of_element_located((By.XPATH, "//span[@class='sr-only']"))).text
+        assert actual_page_title == self.NEAR_FOUNDATION_PAGE_TITLE, \
+            f"Unexpected page title on Mint page, actual: '{actual_page_title}'," \
+            f"expected: '{self.NEAR_FOUNDATION_PAGE_TITLE}' "
 
 
 if __name__ == '__main__':
