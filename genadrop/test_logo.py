@@ -85,13 +85,13 @@ class TestLogo(unittest.TestCase):
             f"Wrong redirection upon clicking 'Near Foundation Link' button, actual url: '{actual_near_foundation_url}'" \
             f", expected url: '{self.NEAR_FOUNDATION_URL}' "
 
-        # Verify tab title
+        # Verify tab title NEAR foundation page
         actual_near_foundation_title = self.driver.title
         assert actual_near_foundation_title == self.NEAR_FOUNDATION_TAB_TITLE, \
             f"Unexpected tab title for Mint page, actual: '{actual_near_foundation_title}'," \
             f"expected: '{self.NEAR_FOUNDATION_TAB_TITLE}'"
 
-        # Verify page main area title
+        # Verify NEAR foundation page main area title
         actual_page_title = self.wait.until(
             EC.visibility_of_element_located((By.XPATH, "//span[@class='sr-only']"))).text
         assert actual_page_title == self.NEAR_FOUNDATION_PAGE_TITLE, \
