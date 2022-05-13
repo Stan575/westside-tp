@@ -44,7 +44,7 @@ collections on Algorand onto a database to build the marketplace with an Ethereu
         # Verify the docs url
         actual_read_docs_url = self.driver.current_url
         assert self.DOCS_URL == actual_read_docs_url, \
-            f"Wrong URL. actual URL: '{actual_read_docs_url},' expected to be: '{self.DOCS_URL}'"
+            f"Wrong URL! actual URL: '{actual_read_docs_url},' expected to be: '{self.DOCS_URL}'"
 
         # Verify the read the docs tab title
         actual_read_docs_title = self.driver.title
