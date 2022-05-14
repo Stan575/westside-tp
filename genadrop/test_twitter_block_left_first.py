@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+from utils.selenium_utils import SeleniumUtils as SU
 
 class TestLogo(unittest.TestCase):
     URL = 'https://www.genadrop.com/'
@@ -29,16 +29,25 @@ class TestLogo(unittest.TestCase):
 
         self.driver.switch_to.frame(iframe)
 
+        # self.wait.until(EC.element_to_be_clickable((By.XPATH, "//article/div/div[@lang='en']"))).send_keys('\n')
         self.wait.until(EC.element_to_be_clickable((By.TAG_NAME, "article"))).send_keys('\n')
 
+
+        widget_twit = self.driver.find_element(By.XPATH, "//article/div/div[@lang='en']")
+
+        # print('====>', widget_twit.text)
+        widget_twit_text = widget_twit.text[0:30]
         self.driver.switch_to.window(self.driver.window_handles[1])
 
-        tweet_h2_text = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "h2>span")))
-        tweet_author_text = self.wait.until(
-            EC.presence_of_element_located((By.XPATH, '(//div[@data-testid="tweetText"])[1]')))
-
+        tweet_h2_text = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "h2>span")))
+        # tweet_on_twitter_page = self.wait.until(
+        #     EC.presence_of_element_located((By.XPATH, '(//div[@data-testid="tweetText"])[1]')))
+        tweet_on_twitter_page = self.wait.until(
+            EC.presence_of_element_located((By.XPATH, '(//article/div)[1]//div[@lang="en"]')))
+        # print('2====>',tweet_on_twitter_page.text)
         self.assertEqual('Tweet', tweet_h2_text.text, 'Text are not equals!')
-        self.assertTrue(tweet_author_text.text.startswith(self.TWEET_TEXT))
+        self.assertTrue(tweet_on_twitter_page.text.startswith(widget_twit_text))
 
         self.driver.close()
         self.driver.switch_to.window(original_window)
