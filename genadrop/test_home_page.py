@@ -80,6 +80,7 @@ class TestHomePage(unittest.TestCase):
 
     def test_header_mint_button(self):
         """Test Case ID: GD_HP002"""
+
         header_mint_button = self.driver.find_element(By.CSS_SELECTOR, "a[href='/mint'] li")
         header_mint_button.click()
 
@@ -95,20 +96,23 @@ class TestHomePage(unittest.TestCase):
 
     def test_near_foundation_link(self):
         """ TC id: GD_HP008 """
-        near_foundation_link = self.wait.until(
-            EC.visibility_of_element_located((By.XPATH, "//img[@class='Orgs_org__2zmxJ'][2]")))
-        near_foundation_link.click()
+
+        # Click NEAR Foundation image
+        loc_near_foundation_image = (By.XPATH, "//img[@class='Orgs_org__2zmxJ'][2]")
+        self.sl.scroll_and_click(loc_near_foundation_image)
+        # Switch to new tab
         window_name = self.driver.window_handles[-1]
         self.driver.switch_to.window(window_name=window_name)
-        actual_near_foundation_url = self.driver.current_url
-        assert actual_near_foundation_url == self.NEAR_FOUNDATION_URL, \
-            f"Wrong redirection upon clicking 'Near Foundation Link' button, actual url: '{actual_near_foundation_url}'" \
+
+        actual_url = self.driver.current_url
+        assert actual_url == self.NEAR_FOUNDATION_URL, \
+            f"Wrong redirection upon clicking 'Near Foundation Link' button, actual url: '{actual_url}'" \
             f", expected url: '{self.NEAR_FOUNDATION_URL}' "
 
         # Verify tab title
-        actual_near_foundation_title = self.driver.title
-        assert actual_near_foundation_title == self.NEAR_FOUNDATION_TAB_TITLE, \
-            f"Unexpected tab title for Mint page, actual: '{actual_near_foundation_title}'," \
+        actual_title = self.driver.title
+        assert actual_title == self.NEAR_FOUNDATION_TAB_TITLE, \
+            f"Unexpected tab title for Mint page, actual: '{actual_title}'," \
             f"expected: '{self.NEAR_FOUNDATION_TAB_TITLE}'"
 
         # Verify page main area title
@@ -116,10 +120,11 @@ class TestHomePage(unittest.TestCase):
             EC.visibility_of_element_located((By.XPATH, "//span[@class='sr-only']"))).text
         assert actual_page_title == self.NEAR_FOUNDATION_PAGE_TITLE, \
             f"Unexpected page title on Mint page, actual: '{actual_page_title}'," \
-            f"expected: '{self.NEAR_FOUNDATION_PAGE_TITLE}' "
+            f"expected: '{self.NEAR_FOUNDATION_PAGE_TITLE}'"
 
     def test_footer_linkedIn_link(self):
         """Test Case ID: GD_HP028"""
+
         self.sl.scroll_down()
         loc_linkedin_icon_link = By.CSS_SELECTOR, f"div[class^=footer_social] > a[href='{self.MPA_LINKEDIN_URL}']"
         self.sl.get_element(loc_linkedin_icon_link).click()
