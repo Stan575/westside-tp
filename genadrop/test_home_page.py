@@ -1,6 +1,7 @@
 import unittest
 import requests
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -8,7 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.selenium_utils import SeleniumUtils
 from data import WINDOW_WIDTH, WINDOW_HEIGHT, TIMEOUT
-
+from time import sleep
 
 class TestHomePage(unittest.TestCase):
     BASE_URL = 'https://www.genadrop.com/'
@@ -18,6 +19,8 @@ class TestHomePage(unittest.TestCase):
     NEAR_FOUNDATION_URL = "https://near.foundation/"
     NEAR_FOUNDATION_TAB_TITLE = "NEAR Foundation"
     NEAR_FOUNDATION_PAGE_TITLE = "NEAR Foundation"
+    MINORITY_PROGRAMMERS_URL = 'https://www.minorityprogrammers.com/'
+    MINORITY_PROGRAMMERS_TAB_TITLE = 'MPA | Home'
     MPA_LINKEDIN_URL = 'https://linkedin.com/company/minority-programmers/'
     LOGO_HEIGHT = 47
     LOGO_WIDTH = 64
@@ -117,6 +120,32 @@ class TestHomePage(unittest.TestCase):
         assert actual_page_title == self.NEAR_FOUNDATION_PAGE_TITLE, \
             f"Unexpected page title on Mint page, actual: '{actual_page_title}'," \
             f"expected: '{self.NEAR_FOUNDATION_PAGE_TITLE}' "
+
+    def test_minority_programmers_link(self):
+        """ TC id: GD_HP010 """
+        for i in range(20):  # adjust integer value for need
+            # you can change right side number for scroll convenience or destination
+            self.driver.execute_script("window.scrollBy(0, 250)")
+            # you can change time integer to float or remove
+        element = self.driver.find_element(By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
+        sleep(2)
+        element.click()
+
+         # Switching windows
+        tabs = self.driver.window_handles
+        self.assertEqual(len(tabs), 2, f'Actual number of tabs: {len(tabs)}, expected 2 tabs.')
+        self.assertEqual(self.driver.current_url, self.BASE_URL)
+        self.driver.switch_to.window(tabs[1])
+        actual_minority_programmers_url = self.driver.current_url
+        assert actual_minority_programmers_url == self.MINORITY_PROGRAMMERS_URL, \
+            f"Wrong redirection upon clicking 'Minority Programmers Link' button, actual url: '{actual_minority_programmers_url}'," \
+            f", expected url: '{self.MINORITY_PROGRAMMERS_URL}' "
+
+        # Verify tab title
+        title = self.driver.title
+        assert title == self.MINORITY_PROGRAMMERS_TAB_TITLE, \
+            f"Unexpected title for Mint page, actual: '{title}'," \
+            f"expected: '{self.MINORITY_PROGRAMMERS_TAB_TITLE}'"
 
     def test_footer_linkedIn_link(self):
         """Test Case ID: GD_HP028"""
