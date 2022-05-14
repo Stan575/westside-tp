@@ -15,12 +15,18 @@ class SeleniumUtils:
         element = self.wait.until(EC.visibility_of_element_located(locator))
         return element
 
-    def scroll_and_click(self, locator, top_offset=100):
-        """Scroll to element by locator, then safely click element"""
+    def scroll(self, locator, top_offset=0):
+        """Scroll to element by locator"""
         element = self.get_element(locator)
         y = element.location.get('y')
         self.driver.execute_script(f"window.scrollTo(0, {y - top_offset});")
         self.wait.until(lambda d: self.driver.execute_script(is_in_viewport_script, element))
+
+        return element
+
+    def scroll_and_click(self, locator, top_offset=100):
+        """Scroll to element by locator using default (100 px) top offset, then click element"""
+        element = self.scroll(locator, top_offset)
         element.click()
 
     def scroll_down(self):
