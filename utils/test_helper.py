@@ -9,6 +9,6 @@ class TestHelper(SeleniumUtils):
 
     def wait_home_page_to_load(self):
         # Wait for homepage header to be displayed after animation disappears
-        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class^='Navbar_container']")))
+        self.get_element((By.CSS_SELECTOR, "div[class^='Navbar_container']"))
         # Wait for 4 iframes to be present (Tweeter iframes)
         self.wait.until(lambda d: len(self.driver.find_elements(By.TAG_NAME, 'iframe')) >= 4)
