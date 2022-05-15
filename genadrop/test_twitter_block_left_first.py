@@ -96,7 +96,7 @@ class TestLogo(unittest.TestCase):
         expected_url = "https://www.minorityprogrammers.com/"
 
         # wait until some of parts of page fully displayed - content loading from other resources
-        self.wait.until(EC.el((By.ID, "twitter-widget-0")))
+        self.wait.until(EC.visibility_of_element_located((By.ID, "twitter-widget-0")))
 
         # scroll to the last FAQ question
         # SU.scroll_down(SU(self.driver))
