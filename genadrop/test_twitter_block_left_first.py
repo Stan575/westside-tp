@@ -58,6 +58,33 @@ class TestLogo(unittest.TestCase):
         # return to the default content(quit from iframe)
         self.driver.switch_to.default_content()
 
+    def test_FAQ_What_Type_Of_NFT_Can_I_Mint(self):
+        """Test case id: GD_HP025"""
+        expected_answer_text = "Genadrop supports the Minting of 1 of 1 image and collections generated on GenaDrop.\n To Mint 1 0f 1 NFT select your NFT file[supported file format: png], add metadata file and click export"
+
+        # wait until some of parts of page fully displayed
+        self.wait.until(EC.visibility_of_element_located((By.ID, "twitter-widget-0")))
+
+        #scroll to the last FAQ question
+        SU.scroll(SU(self.driver), (By.XPATH, "//div[text()='Frequently Asked Questions']/following-sibling::div/div[last()]"))
+
+        # getting last question from FAQ block
+        freq_asked_question = self.driver.find_element(
+            By.XPATH, "//div[text()='Frequently Asked Questions']/following-sibling::div/div[last()]")
+
+        # click on question to release answer text
+        freq_asked_question.click()
+
+        # get answer text
+        answer_text = freq_asked_question.find_element(By.XPATH, ".//span[text()='A.']/following-sibling::p").text
+
+        # split text into list to compare
+        exp_a = expected_answer_text.split(" ")
+        act_a = answer_text.split(" ")
+
+        # assertion - by text and by list
+        self.assertEqual(answer_text, expected_answer_text,"The text does not match!")
+        self.assertEqual(exp_a, act_a,"The text does not match!")
 
 if __name__ == '__main__':
     unittest.main()
