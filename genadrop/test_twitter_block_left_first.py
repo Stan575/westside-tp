@@ -8,6 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.selenium_utils import SeleniumUtils as SU
 
+
 class TestLogo(unittest.TestCase):
     URL = 'https://www.genadrop.com/'
     TWEET_TEXT = "We are happy to announce our partnership w/ the #NEAR Foundation for Genadrop our no code solution for creating generative art."
@@ -35,7 +36,7 @@ class TestLogo(unittest.TestCase):
         self.driver.switch_to.frame(iframe)
         # click on widget
         self.driver.find_element(By.TAG_NAME, "article").click()
-        #save text from twit - first 30 substring
+        # save text from twit - first 30 substring
         widget_twit_text = (self.driver.find_element(By.XPATH, "//article/div/div[@lang='en']")).text[0:30]
         # switch to opened new tab
         self.driver.switch_to.window(self.driver.window_handles[1])
@@ -49,7 +50,7 @@ class TestLogo(unittest.TestCase):
         # Assert - verify twit's title
         self.assertEqual('Tweet', tweet_h2_text.text, 'Text are not equals!')
         # Assert - verify article text starts with text from widget
-        self.assertTrue(tweet_on_twitter_page.text.startswith(widget_twit_text),"Opened wrong Twitter article!")
+        self.assertTrue(tweet_on_twitter_page.text.startswith(widget_twit_text), f"Opened wrong Twitter article! Twit content should starts with {widget_twit_text}, but starts with {tweet_on_twitter_page.text[0:30]}")
 
         # close opened tab
         self.driver.close()
@@ -62,11 +63,12 @@ class TestLogo(unittest.TestCase):
         """Test case id: GD_HP025"""
         expected_answer_text = "Genadrop supports the Minting of 1 of 1 image and collections generated on GenaDrop.\n To Mint 1 0f 1 NFT select your NFT file[supported file format: png], add metadata file and click export"
 
-        # wait until some of parts of page fully displayed
+        # wait until some of parts of page fully displayed - content loading from other resources
         self.wait.until(EC.visibility_of_element_located((By.ID, "twitter-widget-0")))
 
-        #scroll to the last FAQ question
-        SU.scroll(SU(self.driver), (By.XPATH, "//div[text()='Frequently Asked Questions']/following-sibling::div/div[last()]"))
+        # scroll to the last FAQ question
+        SU.scroll(SU(self.driver),
+                  (By.XPATH, "//div[text()='Frequently Asked Questions']/following-sibling::div/div[last()]"))
 
         # getting last question from FAQ block
         freq_asked_question = self.driver.find_element(
@@ -83,8 +85,46 @@ class TestLogo(unittest.TestCase):
         act_a = answer_text.split(" ")
 
         # assertion - by text and by list
-        self.assertEqual(answer_text, expected_answer_text,"The text does not match!")
-        self.assertEqual(exp_a, act_a,"The text does not match!")
+        self.assertEqual(answer_text, expected_answer_text, f"Expected text: {expected_answer_text} does not match with actual text: {answer_text}!")
+        self.assertEqual(exp_a, act_a, "The text does not match!")
+
+    def test_footer_bottom_built_with_heart(self):
+        """Test case id: GD_HP038"""
+        # save window handle
+        original_window = self.driver.current_window_handle
+        expected_link_text = "Built with ❤ by the Minority Programmers Association"
+        expected_url = "https://www.minorityprogrammers.com/"
+
+        # wait until some of parts of page fully displayed - content loading from other resources
+        self.wait.until(EC.el((By.ID, "twitter-widget-0")))
+
+        # scroll to the last FAQ question
+        # SU.scroll_down(SU(self.driver))
+        SU.scroll(SU(self.driver),(By.XPATH, "//div[text()='Built with ']"), top_offset=-200)
+
+        # SU.scroll_and_click(SU(self.driver),(By.XPATH, "//div[text()='Built with ']"))
+
+        # getting last question from FAQ block
+        footer_text = self.driver.find_element(By.XPATH, "//div[text()='Built with ']")
+        footer_link = footer_text.find_element(By.XPATH, "./..")
+
+        # assert - verify text on the footer
+        self.assertEqual(expected_link_text, footer_text.text, f"Expected text {expected_link_text} does not match to actual text {footer_text.text}!")
+
+        # click link
+        footer_link.click()
+
+        # switch to opened new tab
+        self.driver.switch_to.window(self.driver.window_handles[1])
+
+        # verify current url
+        self.assertEqual(self.driver.current_url, expected_url, f' Expected link {expected_url} soes not match to actual link {self.driver.current_url}')
+
+        # close opened tab
+        self.driver.close()
+        # get back to first window(iframe)
+        self.driver.switch_to.window(original_window)
+
 
 if __name__ == '__main__':
     unittest.main()
