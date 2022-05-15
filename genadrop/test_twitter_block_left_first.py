@@ -25,7 +25,7 @@ class TestLogo(unittest.TestCase):
         self.driver.quit()
 
     def test_tweet_redirect_first_left(self):
-        """ """
+        """Test case id: GD_HP012"""
         # save window handle
         original_window = self.driver.current_window_handle
         # scroll down to widgets
