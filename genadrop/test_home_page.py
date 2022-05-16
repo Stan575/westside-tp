@@ -1,7 +1,6 @@
 import unittest
 import requests
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -9,7 +8,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.selenium_utils import SeleniumUtils
 from data import WINDOW_WIDTH, WINDOW_HEIGHT, TIMEOUT
-from time import sleep
 
 class TestHomePage(unittest.TestCase):
     BASE_URL = 'https://www.genadrop.com/'
@@ -127,13 +125,8 @@ class TestHomePage(unittest.TestCase):
 
     def test_minority_programmers_link(self):
         """ TC id: GD_HP010 """
-        for i in range(20):  # adjust integer value for need
-            # you can change right side number for scroll convenience or destination
-            self.driver.execute_script("window.scrollBy(0, 250)")
-            # you can change time integer to float or remove
-        element = self.driver.find_element(By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
-        sleep(2)
-        element.click()
+        element_mp = (By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
+        self.sl.scroll_and_click(element_mp)
 
          # Switching windows
         tabs = self.driver.window_handles
