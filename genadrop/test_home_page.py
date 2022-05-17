@@ -8,6 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.selenium_utils import SeleniumUtils
 from data import WINDOW_WIDTH, WINDOW_HEIGHT, TIMEOUT
+from time import sleep
 
 class TestHomePage(unittest.TestCase):
     BASE_URL = 'https://www.genadrop.com/'
@@ -152,8 +153,9 @@ class TestHomePage(unittest.TestCase):
         self.sl.scroll_and_click(question_7)
 
         # Verify the answer is displayed after click
-        answer_to_q7 = (By.XPATH, "//p[contains(text(),'With the Genadrop art creation tool (genadrop.com/create)')]")
-        self.assertTrue(question_7, 'The answer is NOT displayed')
+        answer_to_q7 = (By.XPATH, "//div[@class='FAQCard_answer__3-7tF FAQCard_dropdown__RN75J']//p")
+        self.assertTrue('With the Genadrop art creation tool', answer_to_q7)
+
 
     def test_footer_linkedIn_link(self):
         """Test Case ID: GD_HP028"""
