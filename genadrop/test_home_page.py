@@ -144,6 +144,17 @@ class TestHomePage(unittest.TestCase):
             f"Unexpected title for Mint page, actual: '{title}'," \
             f"expected: '{self.MINORITY_PROGRAMMERS_TAB_TITLE}'"
 
+    def test_qa(self):
+        """Test Case ID GD_HP023"""
+        question_7 = (By.XPATH, "//p[contains(text(),'What are some features of GenaDrop art generation ')]")
+
+        # Scroll and click the element
+        self.sl.scroll_and_click(question_7)
+
+        # Verify the answer is displayed after click
+        answer_to_q7 = (By.XPATH, "//p[contains(text(),'With the Genadrop art creation tool (genadrop.com/create)')]")
+        self.assertTrue(question_7, 'The answer is NOT displayed')
+
     def test_footer_linkedIn_link(self):
         """Test Case ID: GD_HP028"""
 
