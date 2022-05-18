@@ -5,7 +5,10 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from utils.selenium_utils import SeleniumUtils as SU
+
+from data import TIMEOUT, WINDOW_WIDTH, WINDOW_HEIGHT
+from utils.selenium_utils import SeleniumUtils
+from utils.test_helper import TestHelper
 
 
 class TestGenaDropHomePage(unittest.TestCase):
@@ -19,11 +22,12 @@ collections on Algorand onto a database to build the marketplace with an Ethereu
     def setUp(self):
         service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=service)
-        self.wait = WebDriverWait(self.driver, 5)
-        self.driver.set_window_size(1600, 1050)
+        self.wait = WebDriverWait(self.driver, TIMEOUT)
+        self.sl = SeleniumUtils(self.driver, self.wait)
+        self.test_helper = TestHelper(self.driver, self.wait)
+        self.driver.set_window_size(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.driver.get(self.HOME_PAGE_URL)
-        # Wait for homepage header to be displayed after animation disappears
-        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class^='Navbar_container']")))
+        self.test_helper.wait_home_page_to_load()
 
     def tearDown(self) -> None:
         self.driver.quit()
@@ -38,7 +42,7 @@ collections on Algorand onto a database to build the marketplace with an Ethereu
         # Verify that the read the docs btn redirects the user to https://www.genadrop.com/docs
         docs_button_locator = (By.CSS_SELECTOR, 'button > span')
         self.wait.until(EC.visibility_of_element_located(docs_button_locator))
-        SU.scroll_and_click(SU(self.driver), docs_button_locator)
+        self.sl.scroll_and_click(docs_button_locator)
         self.wait.until(lambda d: self.driver.current_url == 'https://www.genadrop.com/docs')
 
         # Verify the docs url
@@ -56,7 +60,7 @@ collections on Algorand onto a database to build the marketplace with an Ethereu
         q_genadrop_save_my_assets = (By.XPATH, "//p[text()='Does GenaDrop save my assets?']")
 
         # Scroll to the element and click on it
-        SU.scroll_and_click(SU(self.driver), q_genadrop_save_my_assets)
+        self.sl.scroll_and_click(q_genadrop_save_my_assets)
 
         # Verify the answer is displayed after click
         a_genadrop_saves_my_assets = self.driver.find_element\
@@ -78,7 +82,7 @@ collections on Algorand onto a database to build the marketplace with an Ethereu
 
         # Navigate to the footer of the home page and click on contact us link
         contact_us_btn_locator = (By.XPATH, "//a[text()='Contact Us']")
-        SU.scroll_and_click(SU(self.driver), contact_us_btn_locator, 0)
+        self.sl.scroll_and_click(contact_us_btn_locator, 0)
 
         # Switch focus to the new tab and verify that actual url is equal to expected_contact_us_url
         expected_contact_us_url = 'https://linktr.ee/MinorityProgrammers'
