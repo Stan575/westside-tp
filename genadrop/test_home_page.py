@@ -6,9 +6,12 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from utils.selenium_utils import SeleniumUtils
 from data import WINDOW_WIDTH, WINDOW_HEIGHT, TIMEOUT
+
 from time import sleep
+from utils.selenium_utils import SeleniumUtils
+from utils.test_helper import TestHelper
+
 
 class TestHomePage(unittest.TestCase):
     BASE_URL = 'https://www.genadrop.com/'
@@ -33,17 +36,19 @@ class TestHomePage(unittest.TestCase):
     def setUp(self):
         service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=service)
-        self.sl = SeleniumUtils(self.driver)
         self.wait = WebDriverWait(self.driver, TIMEOUT)
+        self.sl = SeleniumUtils(self.driver, self.wait)
+        self.test_helper = TestHelper(self.driver, self.wait)
         self.driver.set_window_size(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.driver.get(self.BASE_URL)
-        # Wait for homepage header to be displayed after animation disappears
-        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class^='Navbar_container']")))
+        self.test_helper.wait_home_page_to_load()
 
     def tearDown(self):
         self.driver.quit()
 
     def test_desktop_header_logo(self):
+        """Test Case ID: GD_HP005"""
+
         # Verify header logo div is displayed
         logo_div_element = self.driver.find_element(By.CSS_SELECTOR, "div[class^='Navbar_logoContainer']")
         self.assertTrue(logo_div_element.is_displayed(), 'Header logo div is not displayed.')
@@ -126,10 +131,11 @@ class TestHomePage(unittest.TestCase):
 
     def test_minority_programmers_link(self):
         """ TC id: GD_HP010 """
+
         element_mp = (By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
         self.sl.scroll_and_click(element_mp)
 
-         # Switching windows
+        # Switching windows
         tabs = self.driver.window_handles
         self.assertEqual(len(tabs), 2, f'Actual number of tabs: {len(tabs)}, expected 2 tabs.')
         self.assertEqual(self.driver.current_url, self.BASE_URL)
