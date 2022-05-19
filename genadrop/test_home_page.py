@@ -132,13 +132,8 @@ class TestHomePage(unittest.TestCase):
     def test_minority_programmers_link(self):
         """ TC id: GD_HP010 """
 
-        for i in range(20):  # adjust integer value for need
-            # you can change right side number for scroll convenience or destination
-            self.driver.execute_script("window.scrollBy(0, 250)")
-            # you can change time integer to float or remove
-        element = self.driver.find_element(By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
-        sleep(2)
-        element.click()
+        element_mp = (By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
+        self.sl.scroll_and_click(element_mp)
 
         # Switching windows
         tabs = self.driver.window_handles
@@ -155,6 +150,18 @@ class TestHomePage(unittest.TestCase):
         assert title == self.MINORITY_PROGRAMMERS_TAB_TITLE, \
             f"Unexpected title for Mint page, actual: '{title}'," \
             f"expected: '{self.MINORITY_PROGRAMMERS_TAB_TITLE}'"
+
+    def test_qa(self):
+        """Test Case ID GD_HP023"""
+        question_7 = (By.XPATH, "//p[contains(text(),'What are some features of GenaDrop art generation ')]")
+
+        # Scroll and click the element
+        self.sl.scroll_and_click(question_7)
+
+        # Verify the answer is displayed after click
+        answer_to_q7 = (By.XPATH, "//div[@class='FAQCard_answer__3-7tF FAQCard_dropdown__RN75J']//p")
+        self.assertTrue('With the Genadrop art creation tool', answer_to_q7)
+
 
     def test_footer_linkedIn_link(self):
         """Test Case ID: GD_HP028"""
