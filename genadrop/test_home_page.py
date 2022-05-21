@@ -1,3 +1,4 @@
+import time
 import unittest
 import requests
 from selenium import webdriver
@@ -24,6 +25,7 @@ class TestHomePage(unittest.TestCase):
     MINORITY_PROGRAMMERS_URL = 'https://www.minorityprogrammers.com/'
     MINORITY_PROGRAMMERS_TAB_TITLE = 'MPA | Home'
     MPA_LINKEDIN_URL = 'https://linkedin.com/company/minority-programmers/'
+    DOCS_URL = 'https://www.genadrop.com/docs'
     LOGO_HEIGHT = 47
     LOGO_WIDTH = 64
     LOGO_X = 32
@@ -178,6 +180,20 @@ class TestHomePage(unittest.TestCase):
         self.assertEqual(self.driver.current_url, self.BASE_URL)
         self.driver.switch_to.window(tabs[1])
         self.wait.until(lambda d: self.driver.current_url.startswith('https://www.linkedin.com/'))
+
+    def test_docs_footer(self):
+        """Test Case ID GD_HP036"""
+
+        # Navigate to the footer of the home page and click on contact us link
+        self.sl.scroll_down()
+        docs_btn_locator = By.XPATH, "//a[contains(text(),'Docs')]"
+        self.sl.get_element(docs_btn_locator).click()
+        clickup_frame = self.sl.get_element((By.CSS_SELECTOR, 'iframe[class^=docsEmbed_docs]'))
+        self.driver.switch_to.frame(clickup_frame)
+        element_locator = (By.CSS_SELECTOR, "div.cu-dashboard-doc-breadcrumbs__step-text")
+        actual_text = self.sl.get_element(element_locator).text
+        expected_text ="GenaDrop Docs"
+        self.assertEquals(actual_text, expected_text)
 
 
 if __name__ == '__main__':
