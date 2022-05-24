@@ -1,4 +1,3 @@
-import time
 import unittest
 import requests
 from selenium import webdriver
@@ -9,7 +8,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from data import WINDOW_WIDTH, WINDOW_HEIGHT, TIMEOUT
 
-from time import sleep
 from utils.selenium_utils import SeleniumUtils
 from utils.test_helper import TestHelper
 
@@ -137,7 +135,7 @@ class TestHomePage(unittest.TestCase):
         element_mp = (By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
         self.sl.scroll_and_click(element_mp)
 
-        # Switching windows
+         # Switching windows
         tabs = self.driver.window_handles
         self.assertEqual(len(tabs), 2, f'Actual number of tabs: {len(tabs)}, expected 2 tabs.')
         self.assertEqual(self.driver.current_url, self.BASE_URL)
@@ -194,6 +192,68 @@ class TestHomePage(unittest.TestCase):
         actual_text = self.sl.get_element(element_locator).text
         expected_text ="GenaDrop Docs"
         self.assertEquals(actual_text, expected_text)
+
+    def test_tweet_redirect_first_left(self):
+        """Test case id: GD_HP012"""
+
+        self.sl.scroll((By.XPATH, "(//iframe)[1]"))
+        iframe = self.wait.until(EC.presence_of_element_located((By.ID, "twitter-widget-0")))
+        self.driver.switch_to.frame(iframe)
+
+        self.driver.find_element(By.TAG_NAME, "article").click()
+        widget_twit_text = (self.driver.find_element(By.XPATH, "//article/div/div[@lang='en']")).text[0:30]
+
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        tweet_h2_text = self.wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "h2>span")))
+        tweet_on_twitter_page = self.wait.until(
+            EC.presence_of_element_located((By.XPATH, '(//article/div)[1]//div[@lang="en"]')))
+
+        self.assertEqual('Tweet', tweet_h2_text.text, 'Text are not equals!')
+        self.assertTrue(tweet_on_twitter_page.text.startswith(widget_twit_text),
+                        f"Opened wrong Twitter article! Twit content should starts with {widget_twit_text}, but starts with {tweet_on_twitter_page.text[0:30]}")
+
+
+    def test_FAQ_What_Type_Of_NFT_Can_I_Mint(self):
+        """Test case id: GD_HP025"""
+
+        expected_answer_text = "Genadrop supports the Minting of 1 of 1 image and collections generated on GenaDrop.\n To Mint 1 0f 1 NFT select your NFT file[supported file format: png], add metadata file and click export"
+
+        self.wait.until(EC.visibility_of_element_located((By.ID, "twitter-widget-0")))
+
+        self.sl.scroll((By.XPATH, "//div[text()='Frequently Asked Questions']/following-sibling::div/div[last()]"))
+
+        freq_asked_question = self.driver.find_element(
+            By.XPATH, "//div[text()='Frequently Asked Questions']/following-sibling::div/div[last()]")
+        freq_asked_question.click()
+
+        answer_text = freq_asked_question.find_element(By.XPATH, ".//span[text()='A.']/following-sibling::p").text
+
+        exp_a = expected_answer_text.split(" ")
+        act_a = answer_text.split(" ")
+
+        self.assertEqual(answer_text, expected_answer_text, f"Expected text: {expected_answer_text} does not match with actual text: {answer_text}!")
+        self.assertEqual(exp_a, act_a, "The text does not match!")
+
+    def test_footer_bottom_built_with_heart(self):
+        """Test case id: GD_HP038"""
+
+        expected_link_text = "Built with ❤ by the Minority Programmers Association"
+        expected_url = "https://www.minorityprogrammers.com/"
+
+        self.wait.until(EC.visibility_of_element_located((By.ID, "twitter-widget-0")))
+        self.sl.scroll((By.XPATH, "//div[text()='Built with ']"), top_offset=-200)
+
+        footer_text = self.driver.find_element(By.XPATH, "//div[text()='Built with ']")
+        footer_link = footer_text.find_element(By.XPATH, "./..")
+
+        self.assertEqual(expected_link_text, footer_text.text, f"Expected text {expected_link_text} does not match to actual text {footer_text.text}!")
+        footer_link.click()
+
+        self.driver.switch_to.window(self.driver.window_handles[1])
+
+        self.assertEqual(self.driver.current_url, expected_url, f' Expected link {expected_url} soes not match to actual link {self.driver.current_url}')
+
 
 
 if __name__ == '__main__':
