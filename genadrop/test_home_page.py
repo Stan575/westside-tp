@@ -1,15 +1,17 @@
 import unittest
 import requests
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from utils.selenium_utils import SeleniumUtils
 from data import WINDOW_WIDTH, WINDOW_HEIGHT, TIMEOUT
+
 from time import sleep
+from utils.selenium_utils import SeleniumUtils
+from utils.test_helper import TestHelper
+
 
 class TestHomePage(unittest.TestCase):
     BASE_URL = 'https://www.genadrop.com/'
@@ -22,6 +24,7 @@ class TestHomePage(unittest.TestCase):
     MINORITY_PROGRAMMERS_URL = 'https://www.minorityprogrammers.com/'
     MINORITY_PROGRAMMERS_TAB_TITLE = 'MPA | Home'
     MPA_LINKEDIN_URL = 'https://linkedin.com/company/minority-programmers/'
+    DOCS_URL = 'https://www.genadrop.com/docs'
     LOGO_HEIGHT = 47
     LOGO_WIDTH = 64
     LOGO_X = 32
@@ -34,17 +37,19 @@ class TestHomePage(unittest.TestCase):
     def setUp(self):
         service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=service)
-        self.sl = SeleniumUtils(self.driver)
         self.wait = WebDriverWait(self.driver, TIMEOUT)
+        self.sl = SeleniumUtils(self.driver, self.wait)
+        self.test_helper = TestHelper(self.driver, self.wait)
         self.driver.set_window_size(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.driver.get(self.BASE_URL)
-        # Wait for homepage header to be displayed after animation disappears
-        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class^='Navbar_container']")))
+        self.test_helper.wait_home_page_to_load()
 
     def tearDown(self):
         self.driver.quit()
 
     def test_desktop_header_logo(self):
+        """Test Case ID: GD_HP005"""
+
         # Verify header logo div is displayed
         logo_div_element = self.driver.find_element(By.CSS_SELECTOR, "div[class^='Navbar_logoContainer']")
         self.assertTrue(logo_div_element.is_displayed(), 'Header logo div is not displayed.')
@@ -127,13 +132,9 @@ class TestHomePage(unittest.TestCase):
 
     def test_minority_programmers_link(self):
         """ TC id: GD_HP010 """
-        for i in range(20):  # adjust integer value for need
-            # you can change right side number for scroll convenience or destination
-            self.driver.execute_script("window.scrollBy(0, 250)")
-            # you can change time integer to float or remove
-        element = self.driver.find_element(By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
-        sleep(2)
-        element.click()
+
+        element_mp = (By.XPATH, "//img[@class='Orgs_org__2zmxJ'][4]")
+        self.sl.scroll_and_click(element_mp)
 
          # Switching windows
         tabs = self.driver.window_handles
@@ -151,6 +152,18 @@ class TestHomePage(unittest.TestCase):
             f"Unexpected title for Mint page, actual: '{title}'," \
             f"expected: '{self.MINORITY_PROGRAMMERS_TAB_TITLE}'"
 
+    def test_qa(self):
+        """Test Case ID GD_HP023"""
+        question_7 = (By.XPATH, "//p[contains(text(),'What are some features of GenaDrop art generation ')]")
+
+        # Scroll and click the element
+        self.sl.scroll_and_click(question_7)
+
+        # Verify the answer is displayed after click
+        answer_to_q7 = (By.XPATH, "//div[@class='FAQCard_answer__3-7tF FAQCard_dropdown__RN75J']//p")
+        self.assertTrue('With the Genadrop art creation tool', answer_to_q7)
+
+
     def test_footer_linkedIn_link(self):
         """Test Case ID: GD_HP028"""
 
@@ -166,6 +179,20 @@ class TestHomePage(unittest.TestCase):
         self.assertEqual(self.driver.current_url, self.BASE_URL)
         self.driver.switch_to.window(tabs[1])
         self.wait.until(lambda d: self.driver.current_url.startswith('https://www.linkedin.com/'))
+
+    def test_docs_footer(self):
+        """Test Case ID GD_HP036"""
+
+        # Navigate to the footer of the home page and click on contact us link
+        self.sl.scroll_down()
+        docs_btn_locator = By.XPATH, "//a[contains(text(),'Docs')]"
+        self.sl.get_element(docs_btn_locator).click()
+        clickup_frame = self.sl.get_element((By.CSS_SELECTOR, 'iframe[class^=docsEmbed_docs]'))
+        self.driver.switch_to.frame(clickup_frame)
+        element_locator = (By.CSS_SELECTOR, "div.cu-dashboard-doc-breadcrumbs__step-text")
+        actual_text = self.sl.get_element(element_locator).text
+        expected_text ="GenaDrop Docs"
+        self.assertEquals(actual_text, expected_text)
 
     def test_tweet_redirect_first_left(self):
         """Test case id: GD_HP012"""
